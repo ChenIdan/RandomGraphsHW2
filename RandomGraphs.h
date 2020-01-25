@@ -15,9 +15,9 @@ void print_graph(Random_Graph *G);
 void init_graph(Random_Graph *G);
 int click_size(Random_Graph* G);
 int click_size_new_heuristic(Random_Graph *G);
-float click_prob(unsigned int n, unsigned int k);
-float click_prob(unsigned int n, unsigned int k);
 float  heuristic_expected_click_size(int n);
 float  heuristic_expected_click_size2(int n);
+long double  heuristic_expected_click_size3(int n);
+ 
 
 #endif /*RANDOM_GRAPHS*/

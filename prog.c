@@ -16,7 +16,7 @@ void main(int arc, char *argv[]){
 
    printf("insert number of experminent:");
    scanf("%d", &num_of_experiments);
-
+   printf("expected size for the click that will be found by the first heuristic: %Lg\n",  heuristic_expected_click_size3(n)); 
    printf("expected size for the click that will be found by the first heuristic: %f\n",  heuristic_expected_click_size(n));
    printf("expected size for the click that will be found by the first heuristic: %f\n",  heuristic_expected_click_size2(n));
 

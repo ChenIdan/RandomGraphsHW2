@@ -11,10 +11,12 @@
 #define PRECISION 10000000 /*precision of bernouli experiment*/
 
 
+long double click_prob[2000][2000];
+
 bool is_click(bool *click, Random_Graph *G);
 int largest(int verticesay[], int n);
 void quickSort(int vertices[],int degrees[], int low, int high);
-float click_prob(unsigned int n, unsigned int k);
+float click_prob1(unsigned int n, unsigned int k);
 float click_prob2(unsigned int n, unsigned int k);
 
 
@@ -192,14 +194,14 @@ float click_prob2(unsigned int n, unsigned int k){
 }
 
 //dynamic programming version
-void click_prob_dynamic(int n, double click_prob[][n+1]){
+void click_prob_dynamic(int n){
         int i,j,cur;
-
+        /*
 	for(i=0;i<n+1;i++){
-		for(j=1;j<n+1;j++){
+		for(j=0;j<n+1;j++){
 			click_prob[i][j]=0;
 		}
-	}
+	}*/
 
 	for (i=0;i<n+1;i++){
                click_prob[i][i] = pow(0.5,i*(i-1)/2);
@@ -222,7 +224,7 @@ void click_prob_dynamic(int n, double click_prob[][n+1]){
 
 }
 
-float click_prob(unsigned int n, unsigned int k){
+float click_prob1(unsigned int n, unsigned int k){
 
         if(n<k){
             return 0;
@@ -237,7 +239,7 @@ float click_prob(unsigned int n, unsigned int k){
                 double p = pow(0.5,n-1);
 
 		for(int v=k-1;v<n;v++){
-		      	prob = prob + choose(n-1,v)*click_prob(v,k-1);
+		      	prob = prob + choose(n-1,v)*click_prob1(v,k-1);
 			
 		}
                 return p*prob;
@@ -246,15 +248,14 @@ float click_prob(unsigned int n, unsigned int k){
 
 
 
-float heuristic_expected_click_size3(int n){
-      int k;
+long double  heuristic_expected_click_size3(int n){
+      int  k;
      
-      double expected_size =0;
-      double click_prob[n+1][n+1];
-      click_prob_dynamic(n,click_prob);
+      long double expected_size =0;
+      click_prob_dynamic(n);
 
       for (k=1;k<n+1;k++){
-            expected_size = expected_size + k*click_prob[n][k];
+            expected_size = expected_size + ((double)k)*click_prob[n][k];
       }
 
       return expected_size;
@@ -286,7 +287,7 @@ float heuristic_expected_click_size(int n){
       float expected_size =0;
 
       for (k=1;k<n+1;k++){
-            expected_size = expected_size + k*click_prob(n,k);
+            expected_size = expected_size + k*click_prob1(n,k);
       }
 
       return expected_size;
