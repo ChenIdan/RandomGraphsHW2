@@ -191,6 +191,37 @@ float click_prob2(unsigned int n, unsigned int k){
         }
 }
 
+//dynamic programming version
+void click_prob_dynamic(int n, double click_prob[][n+1]){
+        int i,j,cur;
+
+	for(i=0;i<n+1;i++){
+		for(j=1;j<n+1;j++){
+			click_prob[i][j]=0;
+		}
+	}
+
+	for (i=0;i<n+1;i++){
+               click_prob[i][i] = pow(0.5,i*(i-1)/2);
+        }
+
+	for(i=1;i<n+1;i++){
+	     double p = pow(0.5,i-1);
+	     for(j=1;j<i;j++){
+	        for (int v = j-1;v<i;v++){
+			click_prob[i][j] = click_prob[i][j] + choose(i-1,v)*click_prob[v][j-1];
+		}
+		click_prob[i][j]=p*click_prob[i][j];
+		
+	     
+	     }
+	          
+	     
+	   
+	}
+
+}
+
 float click_prob(unsigned int n, unsigned int k){
 
         if(n<k){
@@ -214,6 +245,23 @@ float click_prob(unsigned int n, unsigned int k){
 }
 
 
+
+float heuristic_expected_click_size3(int n){
+      int k;
+     
+      double expected_size =0;
+      double click_prob[n+1][n+1];
+      click_prob_dynamic(n,click_prob);
+
+      for (k=1;k<n+1;k++){
+            expected_size = expected_size + k*click_prob[n][k];
+      }
+
+      return expected_size;
+
+
+
+}
 
 
 float heuristic_expected_click_size2(int n){
