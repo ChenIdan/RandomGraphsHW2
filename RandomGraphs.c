@@ -10,25 +10,19 @@
 #include <stdlib.h>
 #include <assert.h> 
 
-#define MAX_VERTICES 1000000 /*maximum number of verticex */ 
+#define MAX_VERTICES 10000 /*maximum number of verticex */ 
 #define PRECISION 10000000 /*precision of bernouli experiment*/
 
-
-long double P[2000][2000];
-unsigned long long binomial_coefs[2000][2000];
+long double P[MAX_VERTICES][MAX_VERTICES];
 
 bool is_click(bool *click, Random_Graph *G);
 int largest(int verticesay[], int n);
 void quickSort(int vertices[],int degrees[], int low, int high);
-float click_prob1(unsigned int n, unsigned int k);
-float click_prob2(unsigned int n, unsigned int k);
+void click_prob_dynamic(int n);
+long double  heuristic_expected_click_size(int n);
 
 
 
-
-int Binomial_Coefficient(unsigned long int n, unsigned long int k){
-	return n*(n-1)/2 ;
-}
 Random_Graph* Create_Graph(int n, double p){
 	 int i,j;
 	 Random_Graph* G= malloc(sizeof(Random_Graph));
@@ -155,6 +149,7 @@ void print_graph(Random_Graph *G){
 
 	
 }
+
 int largest(int vertices[], int n)
 {
     int i;
@@ -171,57 +166,6 @@ int largest(int vertices[], int n)
     return max;
 }
 
-int choose(int n, int k){
-    if (k == 0){
-            return 1;
-    }
-    return (n * choose(n - 1, k - 1)) / k;
-}
-
-
-
-
-// Returns value of Binomial Coefficient C(n, k) 
-unsigned long long binomialCoeff(int n, int k) 
-{ 
-    unsigned long long res = 1; 
-  
-    // Since C(n, k) = C(n, n-k) 
-    if ( k > n - k ) 
-        k = n - k; 
-  
-    // Calculate value of [n * (n-1) *---* (n-k+1)] / [k * (k-1) *----* 1] 
-    for (int i = 0; i < k; ++i) 
-    { 
-        res *= (n - i); 
-        res /= (i + 1); 
-    } 
-  
-    return res; 
-} 
-
-// Function to print binomial table
-unsigned long long binomial_table(int n )
-{
-    for (int m = 0; m <= n; m++) {
-        binomial_coefs[m][1] = m;
-        unsigned long long  binom = 1;
-        for (int x = 0; x <= m; x++) {
-
-            // B(m, x) is 1 if either m or x is
-            // is 0.
-            if (m != 0 && x != 0)
-
-                // Otherwise using recursive formula
-                // B(m, x) = B(m, x - 1) * (m - x + 1) / x
-                binom = binom * (m - x + 1) / x;
-                binomial_coefs[m][x] = binom;
-            
-        }
-        
-    }
-}
-//dynamic programming version
 void click_prob_dynamic(int n){
         int i,j;
 	
@@ -237,9 +181,7 @@ void click_prob_dynamic(int n){
 	
 	}
 	
-	
-
-}
+}	
 
 
 long double  heuristic_expected_click_size(int n){
@@ -252,14 +194,7 @@ long double  heuristic_expected_click_size(int n){
 		expected_size = expected_size + k*P[n][(int)k];
 		k++;
 	}
-
-
-      
-
       return expected_size;
-
-
-
 }
 /*probability for the heuristic finding a click of size k in G(n,0.5) graph  according to the recursive relation found in assigmnet 2 Q2 */
 
