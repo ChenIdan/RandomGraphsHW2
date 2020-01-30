@@ -3,56 +3,62 @@
 #include <stdlib.h>
 #include <time.h>
 
+
+#define VERTICES 1000
+#define PROB 0.5
+#define EXPERIMENTS 10000
+
+#define Q2_P1 "Q2_P1"
+#define Q2_P2 "Q2_P2"
+#define Q3_P2 "Q3_P2"
+
 void main(int arc, char *argv[]){
    
-   int n,k;
-   float p;
-   int num_of_experiments;
-   printf("insert the number of vertices:");
-   scanf("%d",&n);
+   int i,k;
 
-   printf("insert the probability for an edge:");
-   scanf("%f",&p);
+   FILE *file1, *file2, *file3;
 
-   printf("insert number of experminent:");
-   scanf("%d", &num_of_experiments);
-   printf("expected size for the click that will be found by the first heuristic: %Lf\n",  heuristic_expected_click_size(n)); 
-
-   if(!argv[1]){
-	   exit(1);
-   }
-   if(!argv[2]){
-          exit(1);
-   }
-   FILE *file1 = fopen(argv[1],"w+");
-   FILE *file2=fopen(argv[2],"w+");
-   int i;
    long double average1=0;
    long double average2=0;
    long double results=0;
+   
+   printf("expected size for the click that will be found by the first heuristic: %Lf\n",  heuristic_expected_click_size(VERTICES)); 
+       
+   
+   file1 = fopen( Q2_P1, "w+");	
+   file2 = fopen( Q2_P2, "w+"); 
+   file3 = fopen(Q3_P2,"w+");
+   
+   if(!file1||!file2||!file3){
+   	fprintf(stderr,"%s\n","Opening of one of the output files had failed\n");
+	exit(1);
+   }
+
+   
    srand(time(NULL));
-   fprintf(file1," Experiment with first heuristic, with n = %d and p=%f\n",n,p);
-   fprintf(file2,"Experiment with second heuristic, with n = %d and p=%f\n",n,p);
-   Random_Graph *G= Create_Graph(n,p);
+   
+   fprintf(file3,"expected size for the click that will be found by the first heuristic: %Lf\n",  heuristic_expected_click_size(VERTICES)); 
+   
+   fprintf(file1," Experiment with first heuristic, with n = %d and p=%f\n",VERTICES,PROB);
+   fprintf(file2,"Experiment with second heuristic, with n = %d and p=%f\n",VERTICES,PROB);
+   
+   Random_Graph *G= Create_Graph(VERTICES,PROB);
   
-   for(i=0;i<num_of_experiments;i++){
+   for(i=0;i<EXPERIMENTS;i++){
         init_graph(G);
 	
 	results = click_size(G);
-	average1 = results/num_of_experiments +average1;
+	average1 = results/EXPERIMENTS +average1;
 	fprintf(file1,"results of the %d  experiment with first heuristic: click of size: %Lf \n",i+1,results);
 
 
 	results = click_size_new_heuristic(G);
-	average2 = results/num_of_experiments+average2;
+	average2 = results/EXPERIMENTS+average2;
 	fprintf(file2,"results of the %d  experiment with second heuristic: click of size %Lf \n",i+1, results);
-
    }
 
    fprintf(file1,"average click size of first heuristic: %Lf \n", average1);
    fprintf(file2,"average click size of second heuristic: %Lf \n", average2);
 
-
-   
    printf("average size of click on the first experiment: %Lf, avrage size of click on the second experiment: %Lf \n", average1,  average2);
 }
